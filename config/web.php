@@ -38,6 +38,11 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
+        'mongodb' => [
+            'class' => '\yii\mongodb\Connection',
+            'dsn'=> 'mongodb://localhost/local?connectTimeoutMS=300000',
+            'defaultDatabaseName' => 'local', // Avoid autodetection of default database name
+        ],
     ],
     'params' => $params,
 ];
@@ -47,11 +52,19 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
+        'panels' => [
+            'mongodb' => [
+                'class' => 'yii\mongodb\debug\MongoDbPanel',
+            ],
+        ],
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
+        'generators'=>array(
+            'mongoDBModel' => '\yii\mongodb\gii\model\Generator'
+        ),
     ];
 }
 
